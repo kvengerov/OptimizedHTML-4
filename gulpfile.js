@@ -10,25 +10,13 @@ var gulp          = require('gulp'),
 		notify        = require("gulp-notify"),
 		rsync         = require('gulp-rsync');
 
-// Scripts concat & minify
-
-gulp.task('js', function() {
-	return gulp.src([
-		'app/libs/jquery/dist/jquery.min.js',
-		'app/js/common.js', // Always at the end
-		])
-	.pipe(concat('scripts.min.js'))
-	// .pipe(uglify()) // Mifify js (opt.)
-	.pipe(gulp.dest('app/js'))
-	.pipe(browsersync.reload({ stream: true }))
-});
-
 gulp.task('browser-sync', function() {
 	browsersync({
 		server: {
 			baseDir: 'app'
 		},
 		notify: false,
+		// open: false,
 		// tunnel: true,
 		// tunnel: "projectmane", //Demonstration page: http://projectmane.localtunnel.me
 	})
@@ -44,10 +32,15 @@ gulp.task('sass', function() {
 	.pipe(browsersync.reload( {stream: true} ))
 });
 
-gulp.task('watch', ['sass', 'js', 'browser-sync'], function() {
-	gulp.watch('app/sass/**/*.sass', ['sass']);
-	gulp.watch(['libs/**/*.js', 'app/js/common.js'], ['js']);
-	gulp.watch('app/*.html', browsersync.reload)
+gulp.task('js', function() {
+	return gulp.src([
+		'app/libs/jquery/dist/jquery.min.js',
+		'app/js/common.js', // Always at the end
+		])
+	.pipe(concat('scripts.min.js'))
+	// .pipe(uglify()) // Mifify js (opt.)
+	.pipe(gulp.dest('app/js'))
+	.pipe(browsersync.reload({ stream: true }))
 });
 
 gulp.task('rsync', function() {
@@ -63,6 +56,12 @@ gulp.task('rsync', function() {
 		silent: false,
 		compress: true
 	}))
+});
+
+gulp.task('watch', ['sass', 'js', 'browser-sync'], function() {
+	gulp.watch('app/sass/**/*.sass', ['sass']);
+	gulp.watch(['libs/**/*.js', 'app/js/common.js'], ['js']);
+	gulp.watch('app/*.html', browsersync.reload)
 });
 
 gulp.task('default', ['watch']);
